@@ -1,11 +1,43 @@
 ---
-title: "class-6-22-2023"
+title: Baby Names
+author: Vaangmaya Rebba
+execute: 
+  echo: false
+  message: false
+  warning: false
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+This is an example plot using data from the Baby Names package
 
 ```{r}
-1 + 1
+library(tidyverse)
+library(ggplot2)
+library(babynames)
+library(ggthemes)
 ```
+
+```{r}
+x <- babynames |> 
+  filter(str_detect(name,"i$"))|> 
+  select(year, sex, name, prop) |> 
+  filter(year >= 1900) |> 
+  summarize(sum_prop = sum(prop), .by = c(year, sex))
+
+x |> 
+  ggplot(
+    aes(x = year, y = sum_prop, fill = sex, color = sex)
+  )+
+  geom_area()+
+  scale_y_continuous(labels = scales::percent)+
+  theme(legend.position = "bottom")+
+  labs(
+    title = "Baby Names Ending with 'I' from 1900 to Present",
+    subtitle = "More Females are named with names ending in I",
+    x = "Year", y = "Percent of Babies"
+  )+
+  theme_classic()
+```
+
+
+
+
